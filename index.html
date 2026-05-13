@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debt Payoff Calculator | 傳務償還計算器</title>
+    <meta name="description" content="Compare Snowball vs Avalanche debt payoff strategies. See which method saves you the most time and interest. Free debt payoff calculator with PDF report.">
+    <meta property="og:title" content="Debt Payoff Calculator - Snowball vs Avalanche">
+    <meta property="og:description" content="Find the fastest way to become debt-free. Compare two proven strategies with interactive chart.">
+    <meta property="og:image" content="https://picsum.photos/id/1015/1200/630">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+        .tail-container * { font-family: 'Inter', system_ui, sans-serif; }
+        .glass {
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(20px);
+        }
+        .dark .glass {
+            background: rgba(15,23,42,0.75);
+        }
+    </style>
+</head>
+<body class="tail-container bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen">
+    <div class="max-w-6xl mx-auto px-6 py-8">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-10">
+            <div>
+                <h1 id="title" class="text-4xl font-bold tracking-tight" data-key="title">Debt Payoff Calculator</h1>
+                <p id="subtitle" class="text-slate-500 dark:text-slate-400 mt-1" data-key="subtitle">Find the fastest way to become debt-free</p>
+            </div>
+            <div class="flex items-center gap-x-3">
+                <select id="lang-select" onchange="updateLanguage()" 
+                        class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-2xl px-4 py-2 text-sm font-medium">
+                    <option value="en">🇺🇸 English</option>
+                    <option value="zh">🇹🇼 繁體中文</option>
+                </select>
+                <button onclick="toggleDarkMode()" id="theme-btn"
+                        class="w-11 h-11 flex items-center justify-center bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 rounded-2xl text-2xl transition-all">
+                    🌙
+                </button>
+            </div>
+        </div>
+
+        <!-- Extra Payment (Glassmorphism) -->
+        <div class="max-w-sm mb-8">
+            <div class="glass border border-white/60 dark:border-slate-700 rounded-3xl p-6 shadow-sm">
+                <label id="extra-label" class="block text-sm font-medium text-slate-500 dark:text-slate-400 mb-2" data-key="extraLabel">
+                    Extra Monthly Payment
+                </label>
+                <div class="relative">
+                    <span class="absolute left-5 top-1/2 -translate-y-1/2 text-2xl font-semibold text-slate-400">$</span>
+                    <input id="extra-payment" type="number" value="300" oninput="calculate()"
+                           class="w-full bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-700 rounded-2xl pl-9 pr-5 py-3 text-3xl font-semibold outline-none">
+                </div>
+                <p class="text-xs text-slate-400 mt-1.5" data-key="extraHint">Apply this amount on top of minimum payments</p>
+            </div>
+        </div>
+
+        <!-- Debts Section -->
+        <div class="flex justify-between items-center mb-4">
+            <h2 id="debts-title" class="text-xl font-semibold" data-key="debtsTitle">Your Debts</h2>
+            <button onclick="addDebt()" 
+                    class="bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white px-6 py-2.5 rounded-2xl text-sm font-semibold flex items-center gap-x-2 transition-all">
+                <span>+</span> <span id="add-debt-btn" data-key="addDebt">Add Debt</span>
+            </button>
+        </div>
+
+        <!-- Debts Header -->
+        <div class="hidden md:grid grid-cols-12 gap-4 px-5 mb-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+            <div class="col-span-4" data-key="debtName">Debt Name</div>
+            <div class="col-span-3 text-right" data-key="balance">Balance ($)</div>
+            <div class="col-span-2 text-right" data-key="interestRate">Interest Rate (%)</div>
+            <div class="col-span-2 text-right" data-key="minPayment">Min. Payment ($)</div>
+            <div class="col-span-1"></div>
+        </div>
+
+        <div id="debts-container" class="space-y-3 mb-8"></div>
+
+        <!-- Summary -->
+        <div id="summary-section" class="hidden mb-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-4">
+                <div class="text-xs text-slate-500" data-key="totalDebt">Total Debt</div>
+                <div id="total-debt" class="text-2xl font-semibold mt-1"></div>
+            </div>
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-4">
+                <div class="text-xs text-slate-500" data-key="avgRate">Avg. Interest Rate</div>
+                <div id="avg-rate" class="text-2xl font-semibold mt-1"></div>
+            </div>
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-4">
+                <div class="text-xs text-slate-500" data-key="totalMin">Total Min. Payments</div>
+                <div id="total-min" class="text-2xl font-semibold mt-1"></div>
+            </div>
+            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-4">
+                <div class="text-xs text-slate-500" data-key="debtsCount">Number of Debts</div>
+                <div id="debts-count" class="text-2xl font-semibold mt-1"></div>
+            </div>
+        </div>
+
+        <!-- AdSense Slot 1 -->
+        <div class="my-8">
+            <div class="bg-slate-100 dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-4 min-h-[100px] flex items-center justify-center">
+                <div class="text-center">
+                    <div class="text-xs text-slate-400 mb-1">Advertisement</div>
+                    <div class="text-[10px] text-slate-400">AdSense Slot (Replace with your real AdSense code)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div id="results-section" class="hidden">
+            <h2 id="results-title" class="text-xl font-semibold mb-6" data-key="resultsTitle">Comparison Results</h2>
+           
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <!-- Snowball -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-7 border border-slate-200 dark:border-slate-700">
+                    <div class="flex items-center gap-x-2 mb-4">
+                        <span class="bg-blue-600 text-white text-xs px-4 py-1 rounded-full font-medium">Snowball</span>
+                        <span id="snow-desc" class="text-sm text-slate-500 dark:text-slate-400" data-key="snowballDesc">Pay smallest balance first</span>
+                    </div>
+                    <div class="space-y-5">
+                        <div>
+                            <div class="text-sm text-slate-500 dark:text-slate-400" data-key="timeToDebtFree">Time to Debt-Free</div>
+                            <div id="snow-months" class="text-5xl font-bold text-blue-600 tracking-tighter"></div>
+                        </div>
+                        <div>
+                            <div class="text-sm text-slate-500 dark:text-slate-400" data-key="totalInterest">Total Interest Paid</div>
+                            <div id="snow-interest" class="text-3xl font-semibold"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Avalanche -->
+                <div class="bg-white dark:bg-slate-900 rounded-3xl p-7 border border-slate-200 dark:border-slate-700">
+                    <div class="flex items-center gap-x-2 mb-4">
+                        <span class="bg-purple-600 text-white text-xs px-4 py-1 rounded-full font-medium">Avalanche</span>
+                        <span id="ava-desc" class="text-sm text-slate-500 dark:text-slate-400" data-key="avalancheDesc">Pay highest interest first</span>
+                    </div>
+                    <div class="space-y-5">
+                        <div>
+                            <div class="text-sm text-slate-500 dark:text-slate-400" data-key="timeToDebtFree">Time to Debt-Free</div>
+                            <div id="ava-months" class="text-5xl font-bold text-purple-600 tracking-tighter"></div>
+                        </div>
+                        <div>
+                            <div class="text-sm text-slate-500 dark:text-slate-400" data-key="totalInterest">Total Interest Paid</div>
+                            <div id="ava-interest" class="text-3xl font-semibold"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommendation -->
+            <div id="recommendation" class="mb-8 p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900 text-sm"></div>
+
+            <!-- Chart -->
+            <div class="bg-white dark:bg-slate-900 rounded-3xl p-7 mb-8 border border-slate-200 dark:border-slate-700">
+                <h3 id="chart-title" class="font-semibold mb-4" data-key="chartTitle">Debt Reduction Over Time</h3>
+                <canvas id="debt-chart" class="w-full" height="120"></canvas>
+            </div>
+
+            <button onclick="downloadPDF()" 
+                    class="bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white px-8 py-3.5 rounded-2xl font-semibold flex items-center gap-x-2 transition-all">
+                📄 <span data-key="downloadPDF">Download PDF Report</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let debts = [];
+        let chartInstance = null;
+        let currentLang = 'en';
+
+        const translations = {
+            en: {
+                title: "Debt Payoff Calculator",
+                subtitle: "Find the fastest way to become debt-free",
+                extraLabel: "Extra Monthly Payment",
+                extraHint: "Apply this amount on top of minimum payments",
+                debtsTitle: "Your Debts",
+                debtName: "Debt Name",
+                balance: "Balance ($)",
+                interestRate: "Interest Rate (%)",
+                minPayment: "Min. Payment ($)",
+                addDebt: "Add Debt",
+                resultsTitle: "Comparison Results",
+                snowballDesc: "Pay smallest balance first",
+                avalancheDesc: "Pay highest interest first",
+                timeToDebtFree: "Time to Debt-Free",
+                totalInterest: "Total Interest Paid",
+                chartTitle: "Debt Reduction Over Time",
+                downloadPDF: "Download PDF Report",
+                totalDebt: "Total Debt",
+                avgRate: "Avg. Interest Rate",
+                totalMin: "Total Min. Payments",
+                debtsCount: "Number of Debts",
+                recommendation: "Recommendation",
+                snowballWins: "Snowball wins! It helps you stay motivated by paying off small debts faster.",
+                avalancheWins: "Avalanche wins! You will save the most on interest.",
+                tie: "Both strategies take similar time. Avalanche usually saves slightly more interest."
+            },
+            zh: {
+                title: "傳務償還計算器",
+                subtitle: "搛到最快還清债務嘅方法",
+                extraLabel: "每月額外還款",
+                extraHint: "喺最低還款額之ช額外加嘅金額",
+                debtsTitle: "你嘅债務",
+                debtName: "债務名稱",
+                balance: "結欠金額 ($)",
+                interestRate: "年利率 (%)",
+                minPayment: "最低還款 ($)",
+                addDebt: "新增债務",
+                resultsTitle: "比較結果",
+                snowballDesc: "由小額债務開始還",
+                avalancheDesc: "由高息债務開始還",
+                timeToDebtFree: "還清所需時間",
+                totalInterest: "總利息支出",
+                chartTitle: "债務減少趨勢",
+                downloadPDF: "下載 PDF 報告",
+                totalDebt: "總债務",
+                avgRate: "平均利率",
+                totalMin: "最低還款總額",
+                debtsCount: "债務數量",
+                recommendation: "建議",
+                snowballWins: "Snowball 勝出！由細债開始還可以更快有成就感，保持動力。",
+                avalancheWins: "Avalanche 勝出！你會慪最多利息。",
+                tie: "兩種方法時間相若。Avalanche 通常慪多啲利息。"
+            }
+        };
+
+        function updateLanguage() {
+            currentLang = document.getElementById('lang-select').value;
+            const t = translations[currentLang];
+
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (t[key]) el.textContent = t[key];
+            });
+
+            renderDebts();
+            if (!document.getElementById('results-section').classList.contains('hidden')) {
+                calculate();
+            }
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            const btn = document.getElementById('theme-btn');
+            btn.textContent = isDark ? '☀️' : '🌙';
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        function addDebt() {
+            const defaultName = currentLang === 'zh' ? "新债務" : "New Debt";
+            debts.push({
+                id: Date.now(),
+                name: defaultName,
+                balance: 5000,
+                rate: 15,
+                minPayment: 150
+            });
+            renderDebts();
+            calculate();
+            saveToLocalStorage();
+        }
+
+        function renderDebts() {
+            const container = document.getElementById('debts-container');
+            container.innerHTML = '';
+
+            if (debts.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'text-center py-8 text-slate-400 text-sm border border-dashed rounded-2xl';
+                empty.textContent = currentLang === 'zh' ? '未有债務。按上面「新增债務」開始。' : 'No debts yet. Click "Add Debt" above to start.';
+                container.appendChild(empty);
+                return;
+            }
+
+            debts.forEach((debt, index) => {
+                const div = document.createElement('div');
+                div.className = 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-4 rounded-2xl grid grid-cols-1 md:grid-cols-12 gap-3 items-center';
+
+                div.innerHTML = `
+                    <div class="md:col-span-4">
+                        <input type="text" value="${debt.name}" 
+                               class="w-full bg-transparent border-b border-slate-200 dark:border-slate-700 focus:outline-none py-1"
+                               onchange="updateDebt(${index}, 'name', this.value)">
+                    </div>
+                    <div class="md:col-span-3">
+                        <input type="number" value="${debt.balance}" 
+                               class="w-full bg-transparent text-right border-b border-slate-200 dark:border-slate-700 focus:outline-none py-1"
+                               onchange="updateDebt(${index}, 'balance', this.value)">
+                    </div>
+                    <div class="md:col-span-2">
+                        <input type="number" step="0.1" value="${debt.rate}" 
+                               class="w-full bg-transparent text-right border-b border-slate-200 dark:border-slate-700 focus:outline-none py-1"
+                               onchange="updateDebt(${index}, 'rate', this.value)">
+                    </div>
+                    <div class="md:col-span-2">
+                        <input type="number" value="${debt.minPayment}" 
+                               class="w-full bg-transparent text-right border-b border-slate-200 dark:border-slate-700 focus:outline-none py-1"
+                               onchange="updateDebt(${index}, 'minPayment', this.value)">
+                    </div>
+                    <div class="md:col-span-1 flex justify-end">
+                        <button onclick="deleteDebt(${index})" 
+                                class="text-red-500 hover:text-red-600 text-sm px-3 py-1">Delete</button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateDebt(index, field, value) {
+            debts[index][field] = parseFloat(value) || 0;
+            calculate();
+            saveToLocalStorage();
+        }
+
+        function deleteDebt(index) {
+            debts.splice(index, 1);
+            renderDebts();
+            calculate();
+            saveToLocalStorage();
+        }
+
+        function calculate() {
+            if (debts.length === 0) {
+                document.getElementById('results-section').classList.add('hidden');
+                document.getElementById('summary-section').classList.add('hidden');
+                return;
+            }
+
+            const extra = parseFloat(document.getElementById('extra-payment').value) || 0;
+
+            const snowball = simulate(debts, extra, 'snowball');
+            const avalanche = simulate(debts, extra, 'avalanche');
+
+            document.getElementById('snow-months').innerText = snowball.months + ' mo';
+            document.getElementById('snow-interest').innerText = '$' + snowball.totalInterest.toLocaleString();
+            document.getElementById('ava-months').innerText = avalanche.months + ' mo';
+            document.getElementById('ava-interest').innerText = '$' + avalanche.totalInterest.toLocaleString();
+
+            updateSummary();
+            updateRecommendation(snowball, avalanche);
+
+            document.getElementById('results-section').classList.remove('hidden');
+            document.getElementById('summary-section').classList.remove('hidden');
+
+            updateChart(snowball.history, avalanche.history, snowball.months, avalanche.months);
+        }
+
+        function updateSummary() {
+            const totalDebt = debts.reduce((sum, d) => sum + d.balance, 0);
+            const totalMin = debts.reduce((sum, d) => sum + d.minPayment, 0);
+            const avgRate = debts.length > 0 
+                ? (debts.reduce((sum, d) => sum + d.rate, 0) / debts.length).toFixed(1) 
+                : 0;
+
+            document.getElementById('total-debt').innerText = '$' + totalDebt.toLocaleString();
+            document.getElementById('avg-rate').innerText = avgRate + '%';
+            document.getElementById('total-min').innerText = '$' + totalMin.toLocaleString();
+            document.getElementById('debts-count').innerText = debts.length;
+        }
+
+        function updateRecommendation(snow, ava) {
+            const recEl = document.getElementById('recommendation');
+            const t = translations[currentLang];
+
+            let html = `<strong class="font-semibold">${t.recommendation}:</strong> `;
+
+            if (snow.months < ava.months) {
+                html += t.snowballWins;
+            } else if (ava.months < snow.months) {
+                html += t.avalancheWins;
+            } else {
+                html += t.tie;
+            }
+            recEl.innerHTML = html;
+        }
+
+        function simulate(list, extra, method) {
+            let arr = JSON.parse(JSON.stringify(list));
+            if (method === 'snowball') {
+                arr.sort((a, b) => a.balance - b.balance);
+            } else {
+                arr.sort((a, b) => b.rate - a.rate);
+            }
+
+            let months = 0;
+            let interest = 0;
+            let history = [arr.reduce((s, d) => s + d.balance, 0)];
+
+            while (arr.some(d => d.balance > 0) && months < 600) {
+                months++;
+
+                arr.forEach(d => {
+                    if (d.balance > 0) {
+                        const monthlyInterest = d.balance * (d.rate / 100 / 12);
+                        d.balance += monthlyInterest;
+                        interest += monthlyInterest;
+                    }
+                });
+
+                let remainingExtra = extra;
+                for (let d of arr) {
+                    if (d.balance <= 0) continue;
+
+                    let payment = d.minPayment;
+                    if (remainingExtra > 0) {
+                        payment += remainingExtra;
+                        remainingExtra = 0;
+                    }
+                    payment = Math.min(payment, d.balance);
+                    d.balance -= payment;
+                }
+
+                const totalBalance = arr.reduce((s, d) => s + Math.max(0, d.balance), 0);
+                history.push(totalBalance);
+
+                if (totalBalance === 0) break;
+            }
+
+            return {
+                months,
+                totalInterest: Math.round(interest),
+                history
+            };
+        }
+
+        function updateChart(snowHistory, avaHistory, snowMonths, avaMonths) {
+            const ctx = document.getElementById('debt-chart');
+            if (chartInstance) chartInstance.destroy();
+
+            const maxMonths = Math.max(snowMonths, avaMonths);
+            const labels = Array.from({length: maxMonths + 1}, (_, i) => i);
+
+            const padHistory = (history, targetLength) => {
+                const padded = [...history];
+                while (padded.length < targetLength + 1) padded.push(0);
+                return padded;
+            };
+
+            const snowData = padHistory(snowHistory, maxMonths);
+            const avaData = padHistory(avaHistory, maxMonths);
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: currentLang === 'en' ? 'Snowball' : 'Snowball',
+                            data: snowData,
+                            borderColor: '#3b82f6',
+                            borderWidth: 3,
+                            tension: 0.3,
+                            fill: false
+                        },
+                        {
+                            label: currentLang === 'en' ? 'Avalanche' : 'Avalanche',
+                            data: avaData,
+                            borderColor: '#a855f7',
+                            borderWidth: 3,
+                            tension: 0.3,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'top' }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: currentLang === 'en' ? 'Total Debt ($)' : '總债務 ($)' } },
+                        x: { title: { display: true, text: currentLang === 'en' ? 'Months' : '月份' } }
+                    }
+                }
+            });
+        }
+
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const t = translations[currentLang];
+
+            doc.setFontSize(18);
+            doc.text(document.getElementById('title').innerText, 20, 20);
+
+            doc.setFontSize(12);
+            doc.text(`Extra Monthly Payment: $${document.getElementById('extra-payment').value}`, 20, 32);
+
+            doc.text(`Snowball: ${document.getElementById('snow-months').innerText} | Interest: ${document.getElementById('snow-interest').innerText}`, 20, 45);
+            doc.text(`Avalanche: ${document.getElementById('ava-months').innerText} | Interest: ${document.getElementById('ava-interest').innerText}`, 20, 53);
+
+            doc.save("debt-payoff-report.pdf");
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('debts', JSON.stringify(debts));
+            localStorage.setItem('extraPayment', document.getElementById('extra-payment').value);
+        }
+
+        function loadFromLocalStorage() {
+            const savedDebts = localStorage.getItem('debts');
+            const savedExtra = localStorage.getItem('extraPayment');
+
+            if (savedDebts) {
+                debts = JSON.parse(savedDebts);
+            } else {
+                debts = [
+                    { id: 1, name: "Credit Card", balance: 4500, rate: 22, minPayment: 120 },
+                    { id: 2, name: "Personal Loan", balance: 8000, rate: 9, minPayment: 180 }
+                ];
+            }
+
+            if (savedExtra) {
+                document.getElementById('extra-payment').value = savedExtra;
+            }
+        }
+
+        function init() {
+            loadFromLocalStorage();
+            renderDebts();
+
+            const savedDark = localStorage.getItem('darkMode');
+            if (savedDark === 'true' || (savedDark === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                document.getElementById('theme-btn').textContent = '☀️';
+            }
+
+            setTimeout(() => {
+                calculate();
+            }, 100);
+
+            document.getElementById('extra-payment').addEventListener('change', saveToLocalStorage);
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
