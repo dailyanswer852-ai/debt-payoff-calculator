@@ -10,34 +10,117 @@
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
-    <div class="max-w-3xl mx-auto px-6 py-12">
-        <a href="index.html" class="inline-flex items-center text-sm text-blue-600 hover:underline mb-8">
-            <i class="fa-solid fa-arrow-left mr-2"></i> Back to Calculator
-        </a>
+    <div class="max-w-3xl mx-auto px-6 py-10">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+            <a href="index.html" class="flex items-center text-sm text-blue-600 hover:underline">
+                <i class="fa-solid fa-arrow-left mr-2"></i> 
+                <span id="back-text">Back to Calculator</span>
+            </a>
 
-        <h1 class="text-4xl font-semibold tracking-tight mb-2">Privacy Policy</h1>
-        <p class="text-gray-500 mb-8">Last updated: May 2026</p>
-
-        <div class="prose dark:prose-invert max-w-none">
-            <h3>1. No Data Collection</h3>
-            <p>This is a <strong>client-side only</strong> tool. We do <strong>not</strong> collect, store, or transmit any of your debt information to any server.</p>
-
-            <h3 class="mt-8">2. Local Storage Only</h3>
-            <p>We use your browser’s localStorage to remember your debts, language, and theme preference. This data never leaves your device.</p>
-
-            <h3 class="mt-8">3. Google AdSense</h3>
-            <p>This website shows ads from Google AdSense. Google may use cookies for personalized advertising. You can manage your ad preferences here: <a href="https://adssettings.google.com" target="_blank" class="underline">Google Ad Settings</a>.</p>
-
-            <h3 class="mt-8">4. Third-Party Scripts</h3>
-            <p>We load Chart.js and jsPDF from CDN to provide chart and PDF features. These run locally in your browser.</p>
-
-            <h3 class="mt-8">5. Your Rights</h3>
-            <p>Since we don’t collect any personal data, there is nothing to delete or export. You can clear all data by refreshing the page or clearing your browser storage.</p>
+            <!-- Language Toggle -->
+            <div class="flex bg-gray-100 dark:bg-gray-800 rounded-2xl p-1 text-sm">
+                <button onclick="switchLang('en')" id="lang-en"
+                        class="px-4 py-1 rounded-xl font-medium">EN</button>
+                <button onclick="switchLang('zh')" id="lang-zh"
+                        class="px-4 py-1 rounded-xl font-medium">中文</button>
+            </div>
         </div>
 
-        <div class="mt-12 text-sm text-gray-500">
-            If you have any questions about privacy, feel free to reach out.
+        <!-- English Content -->
+        <div id="content-en">
+            <h1 class="text-4xl font-semibold tracking-tight mb-2">Privacy Policy</h1>
+            <p class="text-gray-500 mb-8">Last updated: May 2026</p>
+
+            <div class="prose dark:prose-invert max-w-none space-y-6">
+                <div>
+                    <h3 class="font-semibold">1. No Data Collection</h3>
+                    <p>This is a <strong>client-side only</strong> tool. We do <strong>not</strong> collect, store, or transmit any of your personal or debt information to any server.</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold">2. Local Storage</h3>
+                    <p>We only use your browser’s localStorage to save your debts, language preference and theme. This data never leaves your device.</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold">3. Google AdSense</h3>
+                    <p>This site uses Google AdSense. Google may use cookies to display personalized ads. You can manage your preferences at <a href="https://adssettings.google.com" target="_blank" class="underline">Google Ad Settings</a>.</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold">4. Your Data Control</h3>
+                    <p>Since no data is sent to us, you have full control. You can clear everything by refreshing the page or clearing your browser storage.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chinese Content -->
+        <div id="content-zh" class="hidden">
+            <h1 class="text-4xl font-semibold tracking-tight mb-2">隱私政策</h1>
+            <p class="text-gray-500 mb-8">最後更新：2026年5月</p>
+
+            <div class="prose dark:prose-invert max-w-none space-y-6">
+                <div>
+                    <h3 class="font-semibold">1. 我們不收集資料</h3>
+                    <p>本工具為<strong>純客戶端</strong>應用程式。我們<strong>不會</strong>收集、儲存或傳送你的任何債務或個人資料到伺服器。</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold">2. 本地儲存</h3>
+                    <p>我們只使用瀏覽器的 localStorage 儲存你的債務資料、語言及主題設定。這些資料不會離開你的裝置。</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold">3. Google AdSense</h3>
+                    <p>本網站使用 Google AdSense 展示廣告。Google 可能使用 Cookie 提供個人化廣告。你可以到 <a href="https://adssettings.google.com" target="_blank" class="underline">Google 廣告設定</a> 管理你的偏好。</p>
+                </div>
+                <div>
+                    <h3 class="font-semibold">4. 你的資料控制權</h3>
+                    <p>由於我們不收集任何資料，你擁有完全控制權。可隨時透過重新整理頁面或清除瀏覽器資料來清除所有記錄。</p>
+                </div>
+            </div>
         </div>
     </div>
+
+    <script>
+        function switchLang(lang) {
+            const en = document.getElementById('content-en');
+            const zh = document.getElementById('content-zh');
+            const btnEn = document.getElementById('lang-en');
+            const btnZh = document.getElementById('lang-zh');
+
+            if (lang === 'en') {
+                en.classList.remove('hidden');
+                zh.classList.add('hidden');
+                btnEn.className = 'px-4 py-1 rounded-xl font-medium bg-white dark:bg-gray-700 shadow-sm';
+                btnZh.className = 'px-4 py-1 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-700';
+                localStorage.setItem('privacyLang', 'en');
+            } else {
+                en.classList.add('hidden');
+                zh.classList.remove('hidden');
+                btnEn.className = 'px-4 py-1 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-700';
+                btnZh.className = 'px-4 py-1 rounded-xl font-medium bg-white dark:bg-gray-700 shadow-sm';
+                localStorage.setItem('privacyLang', 'zh');
+            }
+        }
+
+        function initLang() {
+            const saved = localStorage.getItem('privacyLang') || 'en';
+            const en = document.getElementById('content-en');
+            const zh = document.getElementById('content-zh');
+            const btnEn = document.getElementById('lang-en');
+            const btnZh = document.getElementById('lang-zh');
+
+            if (saved === 'zh') {
+                en.classList.add('hidden');
+                zh.classList.remove('hidden');
+                btnZh.className = 'px-4 py-1 rounded-xl font-medium bg-white dark:bg-gray-700 shadow-sm';
+                btnEn.className = 'px-4 py-1 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-700';
+            } else {
+                en.classList.remove('hidden');
+                zh.classList.add('hidden');
+                btnEn.className = 'px-4 py-1 rounded-xl font-medium bg-white dark:bg-gray-700 shadow-sm';
+                btnZh.className = 'px-4 py-1 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-700';
+            }
+        }
+
+        window.onload = initLang;
+    </script>
 </body>
 </html>
