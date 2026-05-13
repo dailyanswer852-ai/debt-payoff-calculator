@@ -191,14 +191,16 @@
     </div>
 
     <!-- Footer -->
-    <footer class="border-t border-gray-200 dark:border-gray-800 py-8 text-sm text-gray-500">
-        <div class="max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-y-3">
-            <div>© 2026 Debt Payoff Calculator • All calculations run locally in your browser</div>
-            <div class="flex items-center gap-x-5">
-                <button onclick="showPrivacyModal()" class="hover:text-gray-700 dark:hover:text-gray-300 transition-colors">Privacy Policy</button>
-            </div>
+   <footer class="border-t border-gray-200 dark:border-gray-800 py-8 text-sm text-gray-500">
+    <div class="max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-y-3">
+        <div>© 2026 Debt Payoff Calculator • All calculations run locally</div>
+        <div class="flex items-center gap-x-5">
+            <a href="about.html" class="hover:text-gray-700 dark:hover:text-gray-300">About</a>
+            <span class="text-gray-300 dark:text-gray-700">•</span>
+            <a href="privacy.html" class="hover:text-gray-700 dark:hover:text-gray-300">Privacy Policy</a>
         </div>
-    </footer>
+    </div>
+</footer>
 
     <!-- Privacy Policy Modal -->
     <div id="privacy-modal" onclick="hidePrivacyModal()" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-[100]">
