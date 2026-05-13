@@ -11,36 +11,117 @@
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
-    <div class="max-w-3xl mx-auto px-6 py-12">
-        <a href="index.html" class="inline-flex items-center text-sm text-blue-600 hover:underline mb-8">
-            <i class="fa-solid fa-arrow-left mr-2"></i> Back to Calculator
-        </a>
+    <div class="max-w-3xl mx-auto px-6 py-10">
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+            <a href="index.html" class="flex items-center text-sm text-blue-600 hover:underline">
+                <i class="fa-solid fa-arrow-left mr-2"></i> 
+                <span id="back-text">Back to Calculator</span>
+            </a>
 
-        <h1 class="text-4xl font-semibold tracking-tight mb-4">About This Tool</h1>
-        <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
-            A simple, private, and accurate debt payoff calculator to help you compare Snowball and Avalanche strategies.
-        </p>
-
-        <div class="prose dark:prose-invert">
-            <h3 class="font-semibold">Why I Built This</h3>
-            <p>Many people struggle with debt but don’t have a clear visual way to compare repayment strategies. This tool was created to make the decision simple and transparent.</p>
-
-            <h3 class="font-semibold mt-8">Key Features</h3>
-            <ul>
-                <li>Compare Snowball vs Avalanche side by side</li>
-                <li>Interactive debt reduction chart</li>
-                <li>Accurate month-by-month simulation</li>
-                <li>Everything runs in your browser (no data is sent anywhere)</li>
-                <li>Support both English and Traditional Chinese</li>
-            </ul>
-
-            <h3 class="font-semibold mt-8">Privacy First</h3>
-            <p>All your debt data stays on your device. Nothing is stored on any server. You can use this tool with complete peace of mind.</p>
+            <!-- Language Toggle -->
+            <div class="flex bg-gray-100 dark:bg-gray-800 rounded-2xl p-1 text-sm">
+                <button onclick="switchLang('en')" id="lang-en"
+                        class="px-4 py-1 rounded-xl font-medium">EN</button>
+                <button onclick="switchLang('zh')" id="lang-zh"
+                        class="px-4 py-1 rounded-xl font-medium">中文</button>
+            </div>
         </div>
 
-        <div class="mt-12 text-sm text-gray-500">
-            Made with the goal of helping people become debt-free faster.
+        <!-- English Content -->
+        <div id="content-en">
+            <h1 class="text-4xl font-semibold tracking-tight mb-4">About This Tool</h1>
+            <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+                A simple, private, and accurate debt payoff calculator to help you compare Snowball and Avalanche strategies.
+            </p>
+
+            <div class="prose dark:prose-invert">
+                <h3>Why I Built This</h3>
+                <p>Many people struggle with debt but don’t have a clear visual way to compare repayment strategies. This tool was created to make the decision simple and transparent.</p>
+
+                <h3 class="mt-8">Key Features</h3>
+                <ul>
+                    <li>Compare Snowball vs Avalanche side by side</li>
+                    <li>Interactive debt reduction chart</li>
+                    <li>Accurate month-by-month simulation with extra payment rollover</li>
+                    <li>Everything runs in your browser (no data is sent anywhere)</li>
+                    <li>Full support for both English and Traditional Chinese</li>
+                </ul>
+
+                <h3 class="mt-8">Privacy First</h3>
+                <p>All your debt data stays on your device. Nothing is stored on any server. You can use this tool with complete peace of mind.</p>
+            </div>
+        </div>
+
+        <!-- Chinese Content -->
+        <div id="content-zh" class="hidden">
+            <h1 class="text-4xl font-semibold tracking-tight mb-4">關於這個工具</h1>
+            <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
+                一個簡單、私密且準確的債務償還計算器，幫助你比較雪球法與雪崩法策略。
+            </p>
+
+            <div class="prose dark:prose-invert">
+                <h3>為什麼製作這個工具</h3>
+                <p>很多人在還債時缺乏清晰的方法去比較不同策略。這個工具旨在讓還債決定變得簡單透明。</p>
+
+                <h3 class="mt-8">主要功能</h3>
+                <ul>
+                    <li>並排比較雪球法與雪崩法</li>
+                    <li>互動式債務減少趨勢圖</li>
+                    <li>精準按月模擬（支援額外還款 rollover）</li>
+                    <li>所有計算在瀏覽器內完成（資料不會離開你的裝置）</li>
+                    <li>完整支援英文與繁體中文</li>
+                </ul>
+
+                <h3 class="mt-8">私隱優先</h3>
+                <p>你的所有債務資料只儲存在你的裝置上，不會上傳任何伺服器。你可以安心使用。</p>
+            </div>
         </div>
     </div>
+
+    <script>
+        function switchLang(lang) {
+            const en = document.getElementById('content-en');
+            const zh = document.getElementById('content-zh');
+            const btnEn = document.getElementById('lang-en');
+            const btnZh = document.getElementById('lang-zh');
+
+            if (lang === 'en') {
+                en.classList.remove('hidden');
+                zh.classList.add('hidden');
+                btnEn.className = 'px-4 py-1 rounded-xl font-medium bg-white dark:bg-gray-700 shadow-sm';
+                btnZh.className = 'px-4 py-1 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-700';
+                localStorage.setItem('aboutLang', 'en');
+            } else {
+                en.classList.add('hidden');
+                zh.classList.remove('hidden');
+                btnEn.className = 'px-4 py-1 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-700';
+                btnZh.className = 'px-4 py-1 rounded-xl font-medium bg-white dark:bg-gray-700 shadow-sm';
+                localStorage.setItem('aboutLang', 'zh');
+            }
+        }
+
+        function initLang() {
+            const saved = localStorage.getItem('aboutLang') || 'en';
+            const en = document.getElementById('content-en');
+            const zh = document.getElementById('content-zh');
+            const btnEn = document.getElementById('lang-en');
+            const btnZh = document.getElementById('lang-zh');
+
+            if (saved === 'zh') {
+                en.classList.add('hidden');
+                zh.classList.remove('hidden');
+                btnZh.className = 'px-4 py-1 rounded-xl font-medium bg-white dark:bg-gray-700 shadow-sm';
+                btnEn.className = 'px-4 py-1 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-700';
+            } else {
+                en.classList.remove('hidden');
+                zh.classList.add('hidden');
+                btnEn.className = 'px-4 py-1 rounded-xl font-medium bg-white dark:bg-gray-700 shadow-sm';
+                btnZh.className = 'px-4 py-1 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-700';
+            }
+        }
+
+        window.onload = initLang;
+    </script>
 </body>
 </html>
