@@ -10,48 +10,48 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Noto+Sans+TC:wght@400;500;700&amp;display=swap');
-        
+       
         :root {
             --font-sans: 'Inter', 'Noto Sans TC', system-ui, sans-serif;
         }
-        
+       
         body {
             font-family: var(--font-sans);
         }
-        
+       
         .glass {
             background: rgba(255, 255, 255, 0.75);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
         }
-        
+       
         .dark .glass {
             background: rgba(31, 41, 55, 0.75);
         }
-        
+       
         .debt-card {
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
+       
         .result-card {
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        
+       
         .result-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
         }
-        
+       
         .section-header {
             font-size: 1.1rem;
             font-weight: 600;
             letter-spacing: -0.025em;
         }
-        
+       
         canvas {
             max-height: 320px !important;
         }
-        
+       
         .metric-value {
             font-variant-numeric: tabular-nums;
         }
@@ -70,18 +70,16 @@
                     <p class="text-xs text-gray-500 -mt-1" id="main-subtitle">雪球法 vs 雪崩法</p>
                 </div>
             </div>
-            
+           
             <div class="flex items-center gap-x-2">
-                <!-- Language Toggle -->
                 <div class="flex bg-gray-100 dark:bg-gray-800 rounded-2xl p-1">
                     <button onclick="switchLanguage('en')" id="btn-en"
                             class="px-4 py-1.5 text-sm font-medium rounded-xl transition-all active:scale-[0.985]">EN</button>
                     <button onclick="switchLanguage('zh')" id="btn-zh"
                             class="px-4 py-1.5 text-sm font-medium rounded-xl transition-all active:scale-[0.985]">中文</button>
                 </div>
-                
-                <!-- Theme Toggle -->
-                <button onclick="toggleDarkMode()" 
+               
+                <button onclick="toggleDarkMode()"
                         class="w-10 h-10 flex items-center justify-center rounded-2xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-xl">
                     <i class="fa-solid fa-moon dark:hidden"></i>
                     <i class="fa-solid fa-sun hidden dark:block"></i>
@@ -91,7 +89,7 @@
     </header>
 
     <div class="max-w-5xl mx-auto px-6 pt-8 pb-16">
-        
+       
         <!-- Hero -->
         <div class="text-center mb-10">
             <h2 class="text-4xl md:text-5xl font-semibold tracking-tighter" id="hero-title">
@@ -106,14 +104,12 @@
         <div class="mb-8">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="section-header" id="debts-title">Your Debts</h3>
-                <button onclick="addDebt()" 
+                <button onclick="addDebt()"
                         class="flex items-center gap-x-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 transition-all text-white rounded-2xl text-sm font-medium shadow-sm">
                     <i class="fa-solid fa-plus"></i>
                     <span id="add-debt-btn">Add Debt</span>
                 </button>
             </div>
-
-            <!-- Debts List -->
             <div id="debts-list" class="space-y-3"></div>
         </div>
 
@@ -121,7 +117,7 @@
         <div class="mb-8 max-w-md">
             <label class="block text-sm font-medium mb-2" id="extra-label">Extra Monthly Payment ($)</label>
             <div class="flex gap-3">
-                <input type="number" id="extra-payment" value="300" 
+                <input type="number" id="extra-payment" value="300"
                        class="flex-1 px-5 py-3.5 text-lg rounded-2xl border border-gray-300 dark:border-gray-700 dark:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                        oninput="debouncedCalculate()">
                 <div class="px-4 py-3.5 text-sm text-gray-500 dark:text-gray-400 self-center whitespace-nowrap" id="extra-hint">
@@ -153,10 +149,10 @@
         <!-- Results + Chart -->
         <div id="results-section" class="hidden">
             <div class="glass rounded-3xl p-8 border border-white/60 dark:border-white/10 shadow-xl">
-                
+               
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="section-header" id="results-title">Strategy Comparison</h3>
-                    <button onclick="downloadPDF()" 
+                    <button onclick="downloadPDF()"
                             class="flex items-center gap-x-2 px-4 py-2 text-sm font-medium rounded-2xl border border-gray-300 dark:border-gray-600 hover:bg-white dark:hover:bg-gray-800 transition-colors">
                         <i class="fa-solid fa-download"></i>
                         <span id="download-btn">Download PDF</span>
@@ -178,10 +174,10 @@
                         </div>
                         <div class="flex items-baseline gap-x-1">
                             <span id="snowball-months" class="text-5xl font-semibold tabular-nums"></span>
-                            <span class="text-gray-500" id="months-unit">months</span>
+                            <span class="text-gray-500" id="snowball-months-unit">months</span>
                         </div>
                         <div class="mt-3 text-sm">
-                            <span class="text-gray-500">Total Interest:</span> 
+                            <span class="text-gray-500" id="snowball-interest-label">Total Interest:</span>
                             <span id="snowball-interest" class="font-semibold tabular-nums"></span>
                         </div>
                     </div>
@@ -199,10 +195,10 @@
                         </div>
                         <div class="flex items-baseline gap-x-1">
                             <span id="avalanche-months" class="text-5xl font-semibold tabular-nums"></span>
-                            <span class="text-gray-500" id="months-unit-2">months</span>
+                            <span class="text-gray-500" id="avalanche-months-unit">months</span>
                         </div>
                         <div class="mt-3 text-sm">
-                            <span class="text-gray-500">Total Interest:</span> 
+                            <span class="text-gray-500" id="avalanche-interest-label">Total Interest:</span>
                             <span id="avalanche-interest" class="font-semibold tabular-nums"></span>
                         </div>
                     </div>
@@ -232,15 +228,6 @@
         <!-- AdSense Slot -->
         <div class="mt-10">
             <div class="min-h-[90px] rounded-2xl border border-dashed border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-                <!-- 
-                Replace with your real AdSense code
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-XXXXXXXXXX"
-                     data-ad-slot="1234567890"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-                -->
                 <div class="text-center">
                     <div class="text-[10px] tracking-[2px] text-gray-400">ADVERTISEMENT</div>
                     <div class="text-xs text-gray-500 mt-0.5">AdSense • CLS Protected</div>
@@ -250,10 +237,8 @@
     </div>
 
     <script>
-        // Tailwind Config
         function initTailwind() {
             document.documentElement.style.setProperty('--accent', '#3b82f6');
-            
             tailwind.config = {
                 darkMode: 'class',
                 theme: {
@@ -266,7 +251,6 @@
             };
         }
 
-        // Translations
         const translations = {
             en: {
                 'main-title': 'Debt Payoff Calculator',
@@ -290,11 +274,8 @@
                 'chart-title': 'Debt Reduction Over Time',
                 'chart-note': 'Lower line = faster payoff. Avalanche usually saves more interest.',
                 'empty-text': 'Add at least one debt to see results and the chart',
-                'months-unit': 'months',
-                'debt-name': 'Debt Name',
-                'balance': 'Balance ($)',
-                'interest': 'Interest Rate (%)',
-                'min-payment': 'Min Payment ($)'
+                'months': 'months',
+                'total-interest': 'Total Interest:'
             },
             zh: {
                 'main-title': '債務償還計算器',
@@ -318,11 +299,8 @@
                 'chart-title': '債務減少趨勢圖',
                 'chart-note': '線條越低 = 還清越快。雪崩法通常可節省更多利息。',
                 'empty-text': '請新增至少一筆債務以查看結果與圖表',
-                'months-unit': '個月',
-                'debt-name': '債務名稱',
-                'balance': '餘額 ($)',
-                'interest': '年利率 (%)',
-                'min-payment': '最低還款 ($)'
+                'months': '個月',
+                'total-interest': '總利息：'
             }
         };
 
@@ -342,23 +320,19 @@
             if (savedDebts) {
                 debts = JSON.parse(savedDebts);
             } else {
-                // Default sample debts
                 debts = [
                     { id: Date.now(), name: "Credit Card", balance: 4500, rate: 19.9, minPayment: 120 },
                     { id: Date.now() + 1, name: "Personal Loan", balance: 12000, rate: 8.5, minPayment: 280 }
                 ];
             }
-            
             const savedExtra = localStorage.getItem('extraPayment');
-            if (savedExtra) {
-                document.getElementById('extra-payment').value = savedExtra;
-            }
+            if (savedExtra) document.getElementById('extra-payment').value = savedExtra;
         }
 
         function renderDebts() {
             const container = document.getElementById('debts-list');
             container.innerHTML = '';
-            
+           
             if (debts.length === 0) {
                 document.getElementById('empty-state').classList.remove('hidden');
                 document.getElementById('results-section').classList.add('hidden');
@@ -368,32 +342,26 @@
                 document.getElementById('empty-state').classList.add('hidden');
             }
 
-            debts.forEach((debt, index) => {
+            debts.forEach((debt) => {
                 const div = document.createElement('div');
                 div.className = `debt-card grid grid-cols-1 md:grid-cols-5 gap-3 bg-white dark:bg-gray-800 p-4 rounded-2xl border border-gray-200 dark:border-gray-700`;
-                
                 div.innerHTML = `
                     <div class="md:col-span-2">
-                        <input type="text" value="${debt.name}" 
-                               class="w-full px-4 py-2.5 rounded-xl border dark:bg-gray-900 text-sm"
+                        <input type="text" value="${debt.name}" class="w-full px-4 py-2.5 rounded-xl border dark:bg-gray-900 text-sm"
                                onchange="updateDebt(${debt.id}, 'name', this.value)">
                     </div>
                     <div>
-                        <input type="number" value="${debt.balance}" step="100"
-                               class="w-full px-4 py-2.5 rounded-xl border dark:bg-gray-900 text-sm"
+                        <input type="number" value="${debt.balance}" step="100" class="w-full px-4 py-2.5 rounded-xl border dark:bg-gray-900 text-sm"
                                onchange="updateDebt(${debt.id}, 'balance', this.value)">
                     </div>
                     <div>
-                        <input type="number" value="${debt.rate}" step="0.1"
-                               class="w-full px-4 py-2.5 rounded-xl border dark:bg-gray-900 text-sm"
+                        <input type="number" value="${debt.rate}" step="0.1" class="w-full px-4 py-2.5 rounded-xl border dark:bg-gray-900 text-sm"
                                onchange="updateDebt(${debt.id}, 'rate', this.value)">
                     </div>
                     <div class="flex gap-2">
-                        <input type="number" value="${debt.minPayment}" step="10"
-                               class="flex-1 px-4 py-2.5 rounded-xl border dark:bg-gray-900 text-sm"
+                        <input type="number" value="${debt.minPayment}" step="10" class="flex-1 px-4 py-2.5 rounded-xl border dark:bg-gray-900 text-sm"
                                onchange="updateDebt(${debt.id}, 'minPayment', this.value)">
-                        <button onclick="deleteDebt(${debt.id})" 
-                                class="px-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-950 rounded-xl transition-colors">
+                        <button onclick="deleteDebt(${debt.id})" class="px-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-950 rounded-xl transition-colors">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </div>
@@ -403,14 +371,13 @@
         }
 
         function addDebt() {
-            const newDebt = {
+            debts.push({
                 id: Date.now(),
                 name: `Debt ${debts.length + 1}`,
                 balance: 5000,
                 rate: 12,
                 minPayment: 150
-            };
-            debts.push(newDebt);
+            });
             renderDebts();
             saveToLocalStorage();
             calculate();
@@ -419,12 +386,7 @@
         function updateDebt(id, field, value) {
             const debt = debts.find(d => d.id === id);
             if (!debt) return;
-            
-            if (field === 'name') {
-                debt[field] = value;
-            } else {
-                debt[field] = parseFloat(value) || 0;
-            }
+            debt[field] = field === 'name' ? value : parseFloat(value) || 0;
             saveToLocalStorage();
             debouncedCalculate();
         }
@@ -439,7 +401,6 @@
         // Improved simulation with proper extra payment rollover
         function simulatePayoff(debtsInput, extraPayment, method) {
             if (!debtsInput.length) return { months: 0, totalInterest: 0, history: [0] };
-
             let workingDebts = JSON.parse(JSON.stringify(debtsInput)).map(d => ({
                 ...d,
                 balance: parseFloat(d.balance) || 0,
@@ -447,7 +408,6 @@
                 minPayment: parseFloat(d.minPayment) || 0
             }));
 
-            // Sort by strategy
             if (method === 'snowball') {
                 workingDebts.sort((a, b) => a.balance - b.balance);
             } else {
@@ -463,7 +423,6 @@
                 months++;
                 let monthInterest = 0;
 
-                // 1. Accrue monthly interest
                 workingDebts.forEach(debt => {
                     if (debt.balance > 0) {
                         const interest = debt.balance * (debt.rate / 100 / 12);
@@ -473,7 +432,6 @@
                 });
                 totalInterest += monthInterest;
 
-                // 2. Pay minimum payments
                 workingDebts.forEach(debt => {
                     if (debt.balance > 0) {
                         const pay = Math.min(debt.minPayment, debt.balance);
@@ -481,7 +439,6 @@
                     }
                 });
 
-                // 3. Apply extra payment with rollover (FIXED)
                 let remainingExtra = extraPayment;
                 for (let i = 0; i < workingDebts.length && remainingExtra > 0; i++) {
                     if (workingDebts[i].balance > 0) {
@@ -505,7 +462,6 @@
         function updateChart(snowballHistory, avalancheHistory) {
             const canvas = document.getElementById('debt-chart');
             if (!canvas) return;
-
             if (chartInstance) {
                 chartInstance.destroy();
                 chartInstance = null;
@@ -513,7 +469,6 @@
 
             const maxLen = Math.max(snowballHistory.length, avalancheHistory.length);
             const labels = Array.from({ length: maxLen }, (_, i) => i);
-
             const padHistory = (history, targetLength) => {
                 const padded = [...history];
                 while (padded.length < targetLength) padded.push(0);
@@ -575,11 +530,9 @@
             }
 
             const extra = parseFloat(document.getElementById('extra-payment').value) || 0;
-
             const snowball = simulatePayoff(debts, extra, 'snowball');
             const avalanche = simulatePayoff(debts, extra, 'avalanche');
 
-            // Summary
             const totalDebt = debts.reduce((sum, d) => sum + parseFloat(d.balance), 0);
             const avgRate = debts.reduce((sum, d) => sum + parseFloat(d.rate), 0) / debts.length;
             const totalMin = debts.reduce((sum, d) => sum + parseFloat(d.minPayment), 0);
@@ -588,72 +541,59 @@
             document.getElementById('sum-avg').textContent = avgRate.toFixed(1) + '%';
             document.getElementById('sum-min').textContent = '$' + totalMin.toFixed(0);
             document.getElementById('sum-count').textContent = debts.length;
-
             document.getElementById('summary-section').classList.remove('hidden');
 
-            // Results
+            // Set numbers
             document.getElementById('snowball-months').textContent = snowball.months;
             document.getElementById('snowball-interest').textContent = '$' + snowball.totalInterest;
             document.getElementById('avalanche-months').textContent = avalanche.months;
             document.getElementById('avalanche-interest').textContent = '$' + avalanche.totalInterest;
 
-            document.getElementById('results-section').classList.remove('hidden');
+            // === 關鍵修正：動態更新 months 同 Total Interest label ===
+            const t = translations[currentLang];
+            document.getElementById('snowball-months-unit').textContent = t['months'];
+            document.getElementById('avalanche-months-unit').textContent = t['months'];
+            document.getElementById('snowball-interest-label').textContent = t['total-interest'];
+            document.getElementById('avalanche-interest-label').textContent = t['total-interest'];
 
-            // Update chart
+            document.getElementById('results-section').classList.remove('hidden');
             updateChart(snowball.history, avalanche.history);
-            
             saveToLocalStorage();
         }
 
         function debouncedCalculate() {
             clearTimeout(calculateTimeout);
-            calculateTimeout = setTimeout(() => {
-                calculate();
-            }, 180);
+            calculateTimeout = setTimeout(() => calculate(), 180);
         }
 
         function switchLanguage(lang) {
             currentLang = lang;
             localStorage.setItem('lang', lang);
-            
-            // Update all text
             const t = translations[lang];
-            
-            document.getElementById('main-title').textContent = t['main-title'];
-            document.getElementById('main-subtitle').textContent = t['main-subtitle'];
-            document.getElementById('hero-title').textContent = t['hero-title'];
-            document.getElementById('hero-subtitle').textContent = t['hero-subtitle'];
-            document.getElementById('debts-title').textContent = t['debts-title'];
-            document.getElementById('add-debt-btn').textContent = t['add-debt-btn'];
-            document.getElementById('extra-label').textContent = t['extra-label'];
-            document.getElementById('extra-hint').textContent = t['extra-hint'];
-            
-            document.getElementById('sum-total-label').textContent = t['sum-total-label'];
-            document.getElementById('sum-avg-label').textContent = t['sum-avg-label'];
-            document.getElementById('sum-min-label').textContent = t['sum-min-label'];
-            document.getElementById('sum-count-label').textContent = t['sum-count-label'];
-            
-            document.getElementById('results-title').textContent = t['results-title'];
-            document.getElementById('download-btn').textContent = t['download-btn'];
-            
-            document.getElementById('snowball-name').textContent = t['snowball-name'];
-            document.getElementById('snowball-desc').textContent = t['snowball-desc'];
-            document.getElementById('avalanche-name').textContent = t['avalanche-name'];
-            document.getElementById('avalanche-desc').textContent = t['avalanche-desc'];
-            
-            document.getElementById('chart-title').textContent = t['chart-title'];
-            document.getElementById('chart-note').textContent = t['chart-note'];
-            document.getElementById('empty-text').textContent = t['empty-text'];
+
+            // Update static text
+            const idsToUpdate = [
+                'main-title', 'main-subtitle', 'hero-title', 'hero-subtitle',
+                'debts-title', 'add-debt-btn', 'extra-label', 'extra-hint',
+                'sum-total-label', 'sum-avg-label', 'sum-min-label', 'sum-count-label',
+                'results-title', 'download-btn',
+                'snowball-name', 'snowball-desc', 'avalanche-name', 'avalanche-desc',
+                'chart-title', 'chart-note', 'empty-text'
+            ];
+            idsToUpdate.forEach(id => {
+                const el = document.getElementById(id);
+                if (el && t[id]) el.textContent = t[id];
+            });
 
             // Update button styles
-            document.getElementById('btn-en').className = lang === 'en' 
-                ? 'px-4 py-1.5 text-sm font-medium rounded-xl bg-white dark:bg-gray-700 shadow-sm' 
+            document.getElementById('btn-en').className = lang === 'en'
+                ? 'px-4 py-1.5 text-sm font-medium rounded-xl bg-white dark:bg-gray-700 shadow-sm'
                 : 'px-4 py-1.5 text-sm font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700';
-            document.getElementById('btn-zh').className = lang === 'zh' 
-                ? 'px-4 py-1.5 text-sm font-medium rounded-xl bg-white dark:bg-gray-700 shadow-sm' 
+            document.getElementById('btn-zh').className = lang === 'zh'
+                ? 'px-4 py-1.5 text-sm font-medium rounded-xl bg-white dark:bg-gray-700 shadow-sm'
                 : 'px-4 py-1.5 text-sm font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700';
 
-            // Recalculate to update chart labels
+            // If results are showing, refresh labels
             if (!document.getElementById('results-section').classList.contains('hidden')) {
                 calculate();
             }
@@ -674,67 +614,47 @@
         function initLanguage() {
             const savedLang = localStorage.getItem('lang') || 'en';
             currentLang = savedLang;
-            
-            // Set initial button style
+
             if (savedLang === 'zh') {
                 document.getElementById('btn-zh').className = 'px-4 py-1.5 text-sm font-medium rounded-xl bg-white dark:bg-gray-700 shadow-sm';
                 document.getElementById('btn-en').className = 'px-4 py-1.5 text-sm font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700';
             } else {
                 document.getElementById('btn-en').className = 'px-4 py-1.5 text-sm font-medium rounded-xl bg-white dark:bg-gray-700 shadow-sm';
             }
-            
-            // Apply translations
+
             const t = translations[savedLang];
-            document.getElementById('main-title').textContent = t['main-title'];
-            document.getElementById('main-subtitle').textContent = t['main-subtitle'];
-            document.getElementById('hero-title').textContent = t['hero-title'];
-            document.getElementById('hero-subtitle').textContent = t['hero-subtitle'];
-            document.getElementById('debts-title').textContent = t['debts-title'];
-            document.getElementById('add-debt-btn').textContent = t['add-debt-btn'];
-            document.getElementById('extra-label').textContent = t['extra-label'];
-            document.getElementById('extra-hint').textContent = t['extra-hint'];
-            document.getElementById('sum-total-label').textContent = t['sum-total-label'];
-            document.getElementById('sum-avg-label').textContent = t['sum-avg-label'];
-            document.getElementById('sum-min-label').textContent = t['sum-min-label'];
-            document.getElementById('sum-count-label').textContent = t['sum-count-label'];
-            document.getElementById('results-title').textContent = t['results-title'];
-            document.getElementById('download-btn').textContent = t['download-btn'];
-            document.getElementById('snowball-name').textContent = t['snowball-name'];
-            document.getElementById('snowball-desc').textContent = t['snowball-desc'];
-            document.getElementById('avalanche-name').textContent = t['avalanche-name'];
-            document.getElementById('avalanche-desc').textContent = t['avalanche-desc'];
-            document.getElementById('chart-title').textContent = t['chart-title'];
-            document.getElementById('chart-note').textContent = t['chart-note'];
-            document.getElementById('empty-text').textContent = t['empty-text'];
+            const idsToUpdate = [
+                'main-title', 'main-subtitle', 'hero-title', 'hero-subtitle',
+                'debts-title', 'add-debt-btn', 'extra-label', 'extra-hint',
+                'sum-total-label', 'sum-avg-label', 'sum-min-label', 'sum-count-label',
+                'results-title', 'download-btn',
+                'snowball-name', 'snowball-desc', 'avalanche-name', 'avalanche-desc',
+                'chart-title', 'chart-note', 'empty-text'
+            ];
+            idsToUpdate.forEach(id => {
+                const el = document.getElementById(id);
+                if (el && t[id]) el.textContent = t[id];
+            });
         }
 
         async function downloadPDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            
             doc.setFontSize(18);
             doc.text(currentLang === 'zh' ? '債務償還計算器報告' : 'Debt Payoff Calculator Report', 20, 20);
-            
             doc.setFontSize(11);
             doc.text(`Generated: ${new Date().toLocaleDateString()}`, 20, 28);
-            
             const extra = document.getElementById('extra-payment').value;
             doc.text(`Extra Monthly Payment: $${extra}`, 20, 38);
-            
-            // Summary
             doc.text('Summary', 20, 50);
             doc.text(`Total Debt: ${document.getElementById('sum-total').textContent}`, 25, 58);
             doc.text(`Average Interest Rate: ${document.getElementById('sum-avg').textContent}`, 25, 65);
-            
-            // Results
             doc.text('Snowball Method', 20, 80);
-            doc.text(`Time to Debt-Free: ${document.getElementById('snowball-months').textContent} months`, 25, 88);
+            doc.text(`Time to Debt-Free: ${document.getElementById('snowball-months').textContent} ${translations[currentLang]['months']}`, 25, 88);
             doc.text(`Total Interest: ${document.getElementById('snowball-interest').textContent}`, 25, 95);
-            
             doc.text('Avalanche Method', 20, 108);
-            doc.text(`Time to Debt-Free: ${document.getElementById('avalanche-months').textContent} months`, 25, 116);
+            doc.text(`Time to Debt-Free: ${document.getElementById('avalanche-months').textContent} ${translations[currentLang]['months']}`, 25, 116);
             doc.text(`Total Interest: ${document.getElementById('avalanche-interest').textContent}`, 25, 123);
-            
             doc.save('debt-payoff-report.pdf');
         }
 
@@ -743,34 +663,23 @@
             initTheme();
             loadFromLocalStorage();
             initLanguage();
-            
             renderDebts();
-            
-            // Initial calculation
-            setTimeout(() => {
-                calculate();
-            }, 120);
+            setTimeout(() => calculate(), 120);
 
-            // Make sure chart resizes properly
             window.addEventListener('resize', () => {
-                if (chartInstance) {
-                    chartInstance.resize();
-                }
+                if (chartInstance) chartInstance.resize();
             });
-            
-            // Keyboard support
+
             document.addEventListener('keydown', function(e) {
                 if (e.key === '/' && document.activeElement.tagName === 'BODY') {
                     e.preventDefault();
-                    document.getElementById('extra-payment').focus();
-                    document.getElementById('extra-payment').select();
+                    const input = document.getElementById('extra-payment');
+                    input.focus();
+                    input.select();
                 }
             });
-            
-            console.log('%c[Debt Calculator] Improved version loaded successfully', 'color:#64748b');
         }
 
-        // Start the app
         window.onload = init;
     </script>
 </body>
