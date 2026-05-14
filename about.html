@@ -21,10 +21,8 @@
 
             <!-- Language Toggle -->
             <div class="flex bg-gray-100 dark:bg-gray-800 rounded-2xl p-1 text-sm">
-                <button onclick="switchLang('en')" id="lang-en"
-                        class="px-4 py-1 rounded-xl font-medium">EN</button>
-                <button onclick="switchLang('zh')" id="lang-zh"
-                        class="px-4 py-1 rounded-xl font-medium">中文</button>
+                <button onclick="switchLang('en')" id="lang-en" class="px-4 py-1 rounded-xl font-medium">EN</button>
+                <button onclick="switchLang('zh')" id="lang-zh" class="px-4 py-1 rounded-xl font-medium">中文</button>
             </div>
         </div>
 
@@ -32,24 +30,27 @@
         <div id="content-en">
             <h1 class="text-4xl font-semibold tracking-tight mb-4">About This Tool</h1>
             <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
-                A simple, private, and accurate debt payoff calculator to help you compare Snowball and Avalanche strategies.
+                A simple, accurate, and privacy-first debt payoff calculator designed to help you compare the two most popular repayment strategies: <strong>Snowball</strong> and <strong>Avalanche</strong>.
             </p>
 
             <div class="prose dark:prose-invert">
-                <h3>Why I Built This</h3>
-                <p>Many people struggle with debt but don’t have a clear visual way to compare repayment strategies. This tool was created to make the decision simple and transparent.</p>
+                <h3>Why We Built This</h3>
+                <p>Many people struggle with debt but lack a clear, visual way to understand which repayment strategy works best for them. We created this tool to make financial decisions more transparent and data-driven.</p>
 
-                <h3 class="mt-8">Key Features</h3>
+                <h3 class="mt-8">What Makes This Calculator Different</h3>
                 <ul>
-                    <li>Compare Snowball vs Avalanche side by side</li>
-                    <li>Interactive debt reduction chart</li>
-                    <li>Accurate month-by-month simulation with extra payment rollover</li>
-                    <li>Everything runs in your browser (no data is sent anywhere)</li>
-                    <li>Full support for both English and Traditional Chinese</li>
+                    <li><strong>Accurate Simulation</strong> — Month-by-month calculation with proper extra payment rollover logic</li>
+                    <li><strong>Interactive Chart</strong> — See exactly how your debt decreases over time with both strategies</li>
+                    <li><strong>Privacy First</strong> — Everything runs 100% in your browser. No data is ever sent to any server.</li>
+                    <li><strong>Bilingual Support</strong> — Full support for both English and Traditional Chinese</li>
+                    <li><strong>PDF Report</strong> — Download a professional summary of your repayment plan</li>
                 </ul>
 
-                <h3 class="mt-8">Privacy First</h3>
-                <p>All your debt data stays on your device. Nothing is stored on any server. You can use this tool with complete peace of mind.</p>
+                <h3 class="mt-8">Our Mission</h3>
+                <p>We believe everyone deserves access to clear financial tools without compromising their privacy. This calculator was built with that principle at its core.</p>
+
+                <h3 class="mt-8">Future Plans</h3>
+                <p>We plan to continuously improve the tool based on user feedback, including more repayment strategies, debt consolidation calculators, and better visualization options.</p>
             </div>
         </div>
 
@@ -57,24 +58,27 @@
         <div id="content-zh" class="hidden">
             <h1 class="text-4xl font-semibold tracking-tight mb-4">關於這個工具</h1>
             <p class="text-lg text-gray-600 dark:text-gray-400 mb-8">
-                一個簡單、私密且準確的債務償還計算器，幫助你比較雪球法與雪崩法策略。
+                一個簡單、準確且重視私隱的債務償還計算器，幫助你比較兩種最受歡迎嘅還款策略：<strong>雪球法</strong>同<strong>雪崩法</strong>。
             </p>
 
             <div class="prose dark:prose-invert">
-                <h3>為什麼製作這個工具</h3>
-                <p>很多人在還債時缺乏清晰的方法去比較不同策略。這個工具旨在讓還債決定變得簡單透明。</p>
+                <h3>點解要做呢個工具</h3>
+                <p>好多人面對債務時，都欠缺一個清晰可視化嘅方法去比較邊個策略更適合自己。我哋希望透過呢個工具，讓財務決定變得更透明同數據化。</p>
 
-                <h3 class="mt-8">主要功能</h3>
+                <h3 class="mt-8">呢個計算器有咩特別</h3>
                 <ul>
-                    <li>並排比較雪球法與雪崩法</li>
-                    <li>互動式債務減少趨勢圖</li>
-                    <li>精準按月模擬（支援額外還款 rollover）</li>
-                    <li>所有計算在瀏覽器內完成（資料不會離開你的裝置）</li>
-                    <li>完整支援英文與繁體中文</li>
+                    <li><strong>精準模擬</strong> — 按月計算，並正確處理額外還款 rollover 邏輯</li>
+                    <li><strong>互動圖表</strong> — 清楚顯示兩種策略下債務隨時間減少嘅情況</li>
+                    <li><strong>私隱優先</strong> — 100% 喺你瀏覽器內運作，資料永遠唔會上傳伺服器</li>
+                    <li><strong>雙語支援</strong> — 完整支援英文同繁體中文</li>
+                    <li><strong>PDF 報告</strong> — 可以下載專業嘅還款計劃摘要</li>
                 </ul>
 
-                <h3 class="mt-8">私隱優先</h3>
-                <p>你的所有債務資料只儲存在你的裝置上，不會上傳任何伺服器。你可以安心使用。</p>
+                <h3 class="mt-8">我哋嘅使命</h3>
+                <p>我哋相信每一個人都應該有機會使用清晰嘅財務工具，而唔使犧牲自己嘅私隱。呢個計算器就係基於呢個理念而製作。</p>
+
+                <h3 class="mt-8">未來計劃</h3>
+                <p>我哋會根據用戶反饋持續改進，包括加入更多還款策略、債務合併計算器，以及更好嘅視覺化功能。</p>
             </div>
         </div>
     </div>
@@ -103,24 +107,18 @@
 
         function initLang() {
             const saved = localStorage.getItem('aboutLang') || 'en';
-            const en = document.getElementById('content-en');
-            const zh = document.getElementById('content-zh');
-            const btnEn = document.getElementById('lang-en');
-            const btnZh = document.getElementById('lang-zh');
-
             if (saved === 'zh') {
-                en.classList.add('hidden');
-                zh.classList.remove('hidden');
-                btnZh.className = 'px-4 py-1 rounded-xl font-medium bg-white dark:bg-gray-700 shadow-sm';
-                btnEn.className = 'px-4 py-1 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-700';
+                document.getElementById('content-en').classList.add('hidden');
+                document.getElementById('content-zh').classList.remove('hidden');
+                document.getElementById('lang-zh').className = 'px-4 py-1 rounded-xl font-medium bg-white dark:bg-gray-700 shadow-sm';
+                document.getElementById('lang-en').className = 'px-4 py-1 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-700';
             } else {
-                en.classList.remove('hidden');
-                zh.classList.add('hidden');
-                btnEn.className = 'px-4 py-1 rounded-xl font-medium bg-white dark:bg-gray-700 shadow-sm';
-                btnZh.className = 'px-4 py-1 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-700';
+                document.getElementById('content-en').classList.remove('hidden');
+                document.getElementById('content-zh').classList.add('hidden');
+                document.getElementById('lang-en').className = 'px-4 py-1 rounded-xl font-medium bg-white dark:bg-gray-700 shadow-sm';
+                document.getElementById('lang-zh').className = 'px-4 py-1 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-700';
             }
         }
-
         window.onload = initLang;
     </script>
 </body>
